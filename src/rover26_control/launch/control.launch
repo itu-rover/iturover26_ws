@@ -1,0 +1,10 @@
+<launch>
+<node pkg="rover26_control" type="joy2twist_serial_com.py" name="joy2twist" output="screen"/>
+
+<node pkg="twist_mux" type="twist_mux" name="twist_mux">
+   <rosparam command="load" file="$(find rover26_control)/config/twist_mux.yaml" />
+   <remap from="cmd_vel_out" to="/drive_system/twist"/>
+</node>
+
+</launch>
+
