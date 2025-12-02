@@ -1,0 +1,8 @@
+prefix=/home/yigit/iturover26_ws/install
+
+Name: rover26_control
+Description: Description of rover26_control
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

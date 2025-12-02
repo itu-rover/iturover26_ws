@@ -1,0 +1,1 @@
+/home/yigit/iturover26_ws/devel/.private/gps_goal_26/lib/pkgconfig/gps_goal_26.pc

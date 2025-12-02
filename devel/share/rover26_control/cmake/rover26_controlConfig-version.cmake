@@ -1,0 +1,1 @@
+/home/yigit/iturover26_ws/devel/.private/rover26_control/share/rover26_control/cmake/rover26_controlConfig-version.cmake

@@ -1,0 +1,4 @@
+rover26_localization
+/home/yigit/iturover26_ws/devel/.private/rover26_localization/share/rover26_localization/cmake/rover26_localizationConfig-version.cmake /home/yigit/iturover26_ws/devel/share/rover26_localization/cmake/rover26_localizationConfig-version.cmake
+/home/yigit/iturover26_ws/devel/.private/rover26_localization/share/rover26_localization/cmake/rover26_localizationConfig.cmake /home/yigit/iturover26_ws/devel/share/rover26_localization/cmake/rover26_localizationConfig.cmake
+/home/yigit/iturover26_ws/devel/.private/rover26_localization/lib/pkgconfig/rover26_localization.pc /home/yigit/iturover26_ws/devel/lib/pkgconfig/rover26_localization.pc

@@ -1,0 +1,4 @@
+gps_goal_26
+/home/yigit/iturover26_ws/devel/.private/gps_goal_26/share/gps_goal_26/cmake/gps_goal_26Config.cmake /home/yigit/iturover26_ws/devel/share/gps_goal_26/cmake/gps_goal_26Config.cmake
+/home/yigit/iturover26_ws/devel/.private/gps_goal_26/share/gps_goal_26/cmake/gps_goal_26Config-version.cmake /home/yigit/iturover26_ws/devel/share/gps_goal_26/cmake/gps_goal_26Config-version.cmake
+/home/yigit/iturover26_ws/devel/.private/gps_goal_26/lib/pkgconfig/gps_goal_26.pc /home/yigit/iturover26_ws/devel/lib/pkgconfig/gps_goal_26.pc

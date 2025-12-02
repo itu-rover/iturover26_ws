@@ -1,0 +1,1 @@
+/home/yigit/iturover26_ws/devel/.private/gps_goal_26/share/gps_goal_26/cmake/gps_goal_26Config-version.cmake
