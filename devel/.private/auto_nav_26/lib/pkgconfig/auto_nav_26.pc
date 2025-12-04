@@ -1,8 +1,0 @@
-prefix=/home/yigit/iturover26_ws/devel/.private/auto_nav_26
-
-Name: auto_nav_26
-Description: Description of auto_nav_26
-Version: 0.0.0
-Cflags: 
-Libs: -L${prefix}/lib 
-Requires: 

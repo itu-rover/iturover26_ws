@@ -42,6 +42,7 @@ class ControlVCU:
         rospy.Subscriber("/drive_system/status", String, self.status_cb)
         self.rpm_publisher = rospy.Publisher("/drive_system/wheel_angular_velocities", Float64MultiArray, queue_size=10)
         self.pub_gnss = rospy.Publisher("/gnss_data", Float64MultiArray, queue_size=10)
+        self.vcu_publisher = rospy.Publisher("/drive_system/vcu_data", String, self.wheel_cb)
 
     def run(self):
         rospy.loginfo("OPERATION Started")
@@ -83,6 +84,10 @@ class ControlVCU:
             gnss_pub = Float64MultiArray()
             gnss_pub.data = self.gnss
             self.pub_gnss.publish(gnss_pub)
+
+            vcu_data_pub = String()
+            vcu_data_pub.data = self.recv_msg
+            self.vcu_publisher(vcu_data_pub)   #To send the vcu data to ublox_odom.py
 
         
     def twist_cb(self,data):

@@ -1,0 +1,19 @@
+<launch>
+<!--  <arg name="base_global_planner" default="carrot_planner/CarrotPlanner"/> -->
+  <arg name="base_global_planner" default="navfn/NavfnROS"/>   
+  <!-- <arg name="base_global_planner" default="nav_core_adapter::GlobalPlannerAdapter"/> -->
+  <arg name="base_local_planner" default="nav_core_adapter::LocalPlannerAdapter"/>
+
+  <node name="locomove_base" pkg="locomove_base" type="move_base" output="screen">
+    <param name="base_global_planner" value="$(arg base_global_planner)"/>
+    <param name="base_local_planner" value="$(arg base_local_planner)"/>
+
+    <rosparam file="$(find locomove_base)/config/planner.yaml" command="load"/>
+    <rosparam file="$(find locomove_base)/config/costmap_common.yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(find locomove_base)/config/costmap_common.yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find locomove_base)/config/costmap_local.yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find locomove_base)/config/costmap_global.yaml" command="load" ns="global_costmap" />
+  </node>
+  
+
+</launch>

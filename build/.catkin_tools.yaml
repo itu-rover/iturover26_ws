@@ -1,6 +1,0 @@
-devel_space: /home/yigit/iturover26_ws/devel
-install: false
-install_space: /home/yigit/iturover26_ws/install
-profile: default
-source_space: /home/yigit/iturover26_ws/src
-workspace: /home/yigit/iturover26_ws
