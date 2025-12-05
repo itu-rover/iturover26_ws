@@ -58,7 +58,8 @@ class Ublox():
         self.rpy = euler_from_quaternion([msg.orientation.x, msg.orientation.y, msg.orientation.z, msg.orientation.w]) 
 
     def wheel_cb(self, msg:String): 
-        self.direction = 1 if msg.data[-24] == "1" else -1   # sent from vcu_serial.py
+        self.direction = 1 if msg.data[-24] == "1" else -1   # sent from vcu_serial.py  !may be wrong check again
+        rospy.loginfo(f"our direction is {self.direction}")
 
     def run(self):
         initial_imu:Imu = rospy.wait_for_message("/imu/data", Imu)
