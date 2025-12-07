@@ -42,7 +42,7 @@ class ControlVCU:
         rospy.Subscriber("/drive_system/status", String, self.status_cb)
         self.rpm_publisher = rospy.Publisher("/drive_system/wheel_angular_velocities", Float64MultiArray, queue_size=10)
         self.pub_gnss = rospy.Publisher("/gnss_data", Float64MultiArray, queue_size=10)
-        self.vcu_publisher = rospy.Publisher("/drive_system/vcu_data", String, self.wheel_cb)
+        self.vcu_publisher = rospy.Publisher("/drive_system/vcu_data", String, queue_size=10)
 
     def run(self):
         rospy.loginfo("OPERATION Started")
@@ -64,7 +64,13 @@ class ControlVCU:
 
 
     def get_feedback(self):
-        self.recv_msg = self.serial.readline().decode().strip()
+        try:
+            raw_data = self.serial.readline()
+            # errors='ignore' bozuk karakter gelirse kodu patlatmaz, o karakteri yok sayar
+            self.recv_msg = raw_data.decode('utf-8', errors='ignore').strip()
+        except Exception as e:
+            # Okuma hatasi olursa bos gec, kodu oldurme
+            self.recv_msg = ""
         if self.recv_msg.startswith("S") and self.recv_msg.endswith("X"):
             rospy.loginfo(f"received message from VCU is: {self.recv_msg}")
             self.wheel_speeds[0] = struct.unpack(">i", bytes.fromhex(self.recv_msg[1:9]))[0] #RIGHT FRONT
@@ -87,7 +93,7 @@ class ControlVCU:
 
             vcu_data_pub = String()
             vcu_data_pub.data = self.recv_msg
-            self.vcu_publisher(vcu_data_pub)   #To send the vcu data to ublox_odom.py
+            self.vcu_publisher.publish(vcu_data_pub)   #To send the vcu data to ublox_odom.py
 
         
     def twist_cb(self,data):
