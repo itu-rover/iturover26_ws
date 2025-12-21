@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <launch>
-<rosparam command="load" file="$(find rover23_localization)/config/ekf_params.yaml" />
-<node name="ara_gaz" pkg="rover23_localization" type="ara_gaz.py" output="screen"></node>
-<node name="ublox_odom" pkg="rover23_localization" type="ublox_odom.py" output="screen"></node>
+<rosparam command="load" file="$(find rover26_localization)/config/ekf_params.yaml" />
+<node name="ara_gaz" pkg="rover26_localization" type="ara_gaz.py" output="screen"></node>
+<node name="ublox_odom" pkg="rover26_localization" type="ublox_odom.py" output="screen"></node>
 
 <include file="$(find liorf)/launch/include/module_robot_state_publisher.launch" />
 <node pkg="robot_localization" type="ekf_localization_node" name="ekf_se_odom" clear_params="true"/>
@@ -18,4 +18,4 @@
 <node name="odom_to_os" pkg="tf" type="static_transform_publisher" args="0 0 0 0 0.0 0 base_link os_sensor 200"/> 
 
 
-<launch>
+</launch>
