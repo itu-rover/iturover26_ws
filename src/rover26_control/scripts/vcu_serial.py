@@ -58,7 +58,7 @@ class ControlVCU:
                 self.send_msg += str(abs(int(float("{:.3f}".format(self.linear_x)) * 1000))).zfill(4) # X
                 self.send_msg += self.led_color  # Red "1" (AUTO), Blue "2" (TELEOP), Flashing Green "3" (SUCCESS), No led "4"
                 self.send_msg += "F"
-                # print(self.send_msg)
+                print(self.send_msg)
                 self.serial.write(self.send_msg.encode())
                 self.get_feedback()
 
@@ -69,22 +69,20 @@ class ControlVCU:
         if raw_data and raw_data[0] == 83:
             raw_data = raw_data + self.serial.read(57)
         #rospy.loginfo(raw_data[])
-        try:
+        if(len(raw_data)==58):
             if raw_data[0] == 83 and raw_data[57] == 88:    
-                self.wheel_speeds[0] = raw_data[1:9]
-
-                rospy.loginfo(f"rawdata: {raw_data}")
-                self.wheel_speeds[0] = int(raw_data[1:9].decode())
-                self.wheel_speeds[1] = int(raw_data[9:17].decode()) #struct.unpack(">i", bytes.fromhex(self.recv_msg[9:17]))[0] #RIGHT REAR
-                self.wheel_speeds[2] = int(raw_data[17:25].decode())# struct.unpack(">i", bytes.fromhex(self.recv_msg[17:25]))[0] #LEFT FRONT
-                self.wheel_speeds[3] = int(raw_data[25:33].decode()) # struct.unpack(">i", bytes.fromhex(self.recv_msg[25:33]))[0] #LEFT REAR
+                #rospy.loginfo(f"rawdata: {raw_data}")
+                self.wheel_speeds[0] = struct.unpack("<q", raw_data[1:9])[0]#int(raw_data[1:9].decode())
+                self.wheel_speeds[1] = struct.unpack("<q", raw_data[9:17])[0] #int(raw_data[9:17].decode()) #struct.unpack(">i", bytes.fromhex(self.recv_msg[9:17]))[0] #RIGHT REAR
+                self.wheel_speeds[2] = struct.unpack("<q", raw_data[17:25])[0]#int(raw_data[17:25].decode())# struct.unpack(">i", bytes.fromhex(self.recv_msg[17:25]))[0] #LEFT FRONT
+                self.wheel_speeds[3] = struct.unpack("<q", raw_data[25:33])[0]#int(raw_data[25:33].decode()) # struct.unpack(">i", bytes.fromhex(self.recv_msg[25:33]))[0] #LEFT REAR
                 self.gnss[0] = struct.unpack("<i", raw_data[41:45])[0]* (1e-7)  #lat
                 self.gnss[1] = struct.unpack("<i", raw_data[45:49])[0]* (1e-7)  #long
                 self.gnss[2] = 0 #-int.from_bytes(data[21:23],byteorder='little') * (1e-4) #yaw
                 self.gnss[3] = struct.unpack("<i", raw_data[49:53])[0]* (1e-5) #cog 
                 self.gnss[4] = struct.unpack("<i", raw_data[53:57])[0]* (1e-3) #sog
-                rospy.loginfo(f"wheel data: {self.wheel_speeds}")
-                rospy.loginfo(f"gnss data: {self.gnss}")
+                #rospy.loginfo(f"wheel data: {self.wheel_speeds}")
+                #rospy.loginfo(f"gnss data: {self.gnss}")
                 self.pubm = Float64MultiArray()
                 self.pubm.data = self.wheel_speeds
                 self.rpm_publisher.publish(self.pubm)
@@ -96,9 +94,7 @@ class ControlVCU:
                 vcu_data_pub = String()
                 vcu_data_pub.data = self.recv_msg
                 self.vcu_publisher.publish(vcu_data_pub)   #To send the vcu data to ublox_odom.py
-        except Exception as e:
-            print(f"hataa!!! {e}")
-            pass
+
 
     def twist_cb(self,data):
         self.linear_x = data.linear.x
