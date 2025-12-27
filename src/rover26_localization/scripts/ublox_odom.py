@@ -38,13 +38,17 @@ class Ublox():
 
         rospy.Subscriber("/gnss_data", Float64MultiArray, self.gnss_cb)
         rospy.Subscriber("/imu/data", Imu, self.imu_cb) 
-        rospy.Subscriber("/drive_system/vcu_data", String, self.wheel_cb)
+        # rospy.Subscriber("/drive_system/vcu_data", String, self.wheel_cb)
+        rospy.Subscriber("/direction/data", Int32, self.direction_callback)
 
         self.odom_pub = rospy.Publisher("/ublox/odom", Odometry, queue_size=10)
         self.fix_pub = rospy.Publisher("/gps/fix", NavSatFix, queue_size=10)
         self.initial_yaw_pub = rospy.Publisher("/initial_yaw", Float32, queue_size=10)
 
         self.listener.waitForTransform('/odom', '/base_link', rospy.Time(), rospy.Duration(5.0))
+
+    def direction_callback(self, data:Int32):
+        self.direction = data
 
 
     def gnss_cb(self, msg:Float64MultiArray):
@@ -57,9 +61,9 @@ class Ublox():
     def imu_cb(self, msg:Imu):        
         self.rpy = euler_from_quaternion([msg.orientation.x, msg.orientation.y, msg.orientation.z, msg.orientation.w]) 
 
-    def wheel_cb(self, msg:String): 
-        self.direction = 1 if msg.data[-24] == "1" else -1   # sent from vcu_serial.py  !may be wrong check again
-        rospy.loginfo(f"our direction is {self.direction}")
+    # def wheel_cb(self, msg:String): 
+    #     self.direction = 1 if msg.data[-24] == "1" else -1   # sent from vcu_serial.py  !may be wrong check again
+    #     rospy.loginfo(f"our direction is {self.direction}")
 
     def run(self):
         initial_imu:Imu = rospy.wait_for_message("/imu/data", Imu)

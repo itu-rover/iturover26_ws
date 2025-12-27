@@ -8,7 +8,7 @@
 
 import rospy 
 from geometry_msgs.msg import Twist
-from std_msgs.msg import Float64MultiArray, String
+from std_msgs.msg import Float64MultiArray, String, Int32
 import serial
 from binascii import unhexlify
 import struct
@@ -43,6 +43,7 @@ class ControlVCU:
         self.rpm_publisher = rospy.Publisher("/drive_system/wheel_angular_velocities", Float64MultiArray, queue_size=10)
         self.pub_gnss = rospy.Publisher("/gnss_data", Float64MultiArray, queue_size=10)
         self.vcu_publisher = rospy.Publisher("/drive_system/vcu_data", String, queue_size=10)
+        self.direction_pub = rospy.Publisher("/direction/data", Int32, queue_size=10)
 
     def run(self):
         rospy.loginfo("OPERATION Started")
@@ -67,10 +68,10 @@ class ControlVCU:
         raw_data = 0
         raw_data = self.serial.read(1)
         if raw_data and raw_data[0] == 83:
-            raw_data = raw_data + self.serial.read(57)
+            raw_data = raw_data + self.serial.read(58)
         #rospy.loginfo(raw_data[])
         if(len(raw_data)==58):
-            if raw_data[0] == 83 and raw_data[57] == 88:    
+            if raw_data[0] == 83 and raw_data[58] == 88:    
                 #rospy.loginfo(f"rawdata: {raw_data}")
                 self.wheel_speeds[0] = struct.unpack("<q", raw_data[1:9])[0]#int(raw_data[1:9].decode())
                 self.wheel_speeds[1] = struct.unpack("<q", raw_data[9:17])[0] #int(raw_data[9:17].decode()) #struct.unpack(">i", bytes.fromhex(self.recv_msg[9:17]))[0] #RIGHT REAR
@@ -81,6 +82,7 @@ class ControlVCU:
                 self.gnss[2] = 0 #-int.from_bytes(data[21:23],byteorder='little') * (1e-4) #yaw
                 self.gnss[3] = struct.unpack("<i", raw_data[49:53])[0]* (1e-5) #cog 
                 self.gnss[4] = struct.unpack("<i", raw_data[53:57])[0]* (1e-3) #sog
+                self.direction = 1 if (chr(raw_data[57]) == 'k') else 0
                 #rospy.loginfo(f"wheel data: {self.wheel_speeds}")
                 #rospy.loginfo(f"gnss data: {self.gnss}")
                 self.pubm = Float64MultiArray()
@@ -94,6 +96,7 @@ class ControlVCU:
                 vcu_data_pub = String()
                 vcu_data_pub.data = self.recv_msg
                 self.vcu_publisher.publish(vcu_data_pub)   #To send the vcu data to ublox_odom.py
+                self.direction_pub(self.direction)
 
 
     def twist_cb(self,data):
